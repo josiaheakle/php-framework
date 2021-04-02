@@ -1,0 +1,17 @@
+{
+    "name": "je-development/phpmvc-framework",
+    "description": "A custom php framework following MVC design patterns.",
+    "type": "framework",
+    "authors": [
+        {
+            "name": "Josiah Eakle",
+            "email": "dev@josiaheakle.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "app\\": "./"
+        }
+    }
+}
