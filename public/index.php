@@ -2,17 +2,28 @@
 
 require_once dirname(__DIR__) . "/vendor/autoload.php";
 
-use app\core\Application;
+// Error handling
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-$app = new Application();
+use app\ {
+    core\Application,
+    controllers\SiteController,
+    controllers\AuthController
+};
 
-$app->router->get('/', function() {
-    return "Hello World";
-});
+$app = new Application( "Test App", dirname(__DIR__), "http://localhost:8000");
 
-$app->router->get('/user', function() {
-    return "Hello, user";
-});
+$app->router->get ('/',         [SiteController::class, "home"]);
+$app->router->get ('/contact',  [SiteController::class, "contact"]);
+$app->router->post('/contact',  [SiteController::class, "handleContact"]);
+
+$app->router->get ('/login',    [AuthController::class, 'login']);
+$app->router->post('/login',    [AuthController::class, 'login']);
+
+$app->router->get ('/register', [AuthController::class, 'register']);
+$app->router->post('/register', [AuthController::class, 'register']);
 
 $app->run();
 

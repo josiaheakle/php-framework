@@ -31,9 +31,45 @@ class Request
      * ---
      * @return string : "get", "post"
      */
-    public function getMethod() : string
+    public function method() : string
     {
         return \strtolower($_SERVER['REQUEST_METHOD']);
+    }
+
+    /**
+     * Returns true if request is get type
+     */
+    public function isGet()
+    {
+        return $this->method() === 'get';
+    }
+
+    /**
+     * Returns true if request is post type
+     */
+    public function isPost()
+    {
+        return $this->method() === 'post';
+    }    
+
+    /**
+     * Returns data from get/post request
+     * ---
+     * @return array 
+     */
+    public function getBody() : array
+    {
+        $body = [];
+        if($this->method() === 'get') {
+            foreach($_GET as $key => $value) {
+                $body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+            }
+        } else if ($this->method() === 'post') {
+            foreach($_POST as $key => $value) {
+                $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+            }
+        }
+        return $body;
     }
 
 }
