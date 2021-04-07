@@ -1,0 +1,86 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap'); */
+
+html {
+    font-family: 'Roboto', sans-serif;
+
+    --navbar-height: 4rem;
+    --navbar-background-color: rgb(255, 127, 80);
+
+    --main-margin: 15vw;
+    --main-color: coral;
+}
+
+body {
+    /* Add padding to compensate for navbar */
+    margin: 0;
+    margin-top: calc(var(--navbar-height) + 1rem);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+
+.navbar {
+
+    position: fixed;
+    top: 0; left: 0;
+
+    color: white;
+
+    width: 100vw;
+    height: var(--navbar-height);
+
+    background-color: var(--navbar-background-color);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.navbar-title {
+    margin-left: 1rem;
+}
+
+.navbar-links {
+    margin-right: 1rem;
+    justify-self: flex-end;
+    display: flex;
+    align-self: center;
+    justify-content: space-evenly;
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    height:  var(--navbar-height);
+    align-content: center;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    transition: background-color 250ms ease;
+}
+
+.navbar-link:hover,
+.navbar-link:focus {
+    background-color: grey;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* main {
+    margin-left: var(--main-margin);
+    margin-right: var(--main-margin);
+    width: 70vw;
+} */
