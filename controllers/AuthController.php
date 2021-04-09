@@ -23,17 +23,15 @@ class AuthController extends Controller {
     public function register(Request $request) 
     {
         $this->setLayout('auth');
-        $registerModal = new RegisterModel();
+        $registerModel = new RegisterModel();
         if ($request->isPost()) {
-            $registerModal->loadData($request->getBody());
-            if($registerModal->validate() && $registerModal->register()) {
-                var_dump(['success' => $registerModal]);
+            $registerModel->loadData($request->getBody());
+            if($registerModel->validate() && $registerModel->register()) {
+                var_dump(['success' => $registerModel]);
             }
             
-            return 'Handle registration.';
-        } else return $this->render('register', [
-            'modal'=> $registerModal
-        ]);
+            return $this->render('register',    ['model' => $registerModel]);
+        } else return $this->render('register', ['model' => $registerModel]);
     }
 
 }

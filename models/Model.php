@@ -3,6 +3,7 @@
 namespace app\models;
 
 use EmptyIterator;
+use FFI;
 
 abstract class Model {
 
@@ -15,7 +16,7 @@ abstract class Model {
     public array $errors = [];
 
     /**
-     * Returns array of rules for each input of the modal.
+     * Returns array of rules for each input of the model.
      * ---
      * @return array : ['inputName' => [self::RULE_EXAMPLE]]
      */
@@ -41,29 +42,32 @@ abstract class Model {
     {
         foreach ($this->rules() as $inputName => $rules) {
             $value = $this->{$inputName};
-
-            // echo '<pre>', var_dump(['value'=> $value]), '</pre>';
-            // echo '<pre>',var_dump(['attribute'=>$inputName]),  '</pre>';
-
             foreach ($rules as $rule) {
                 if(!is_string($rule)) {
                     $ruleName = $rule[0];
-            } else $ruleName = $rule;
+                } else $ruleName = $rule;
                 if($ruleName === self::RULE_REQUIRED && !$value) {
                     $this->addError($inputName, self::RULE_REQUIRED);
-                } else if ($ruleName === self::RULE_EMAIL ) {
-
+                } else if ($ruleName === self::RULE_EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL) ) {
+                    $this->addError($inputName, self::RULE_EMAIL);
+                } else if ($ruleName === self::RULE_MAX && strlen($value) > $rule['max']) {
+                    $this->addError($inputName, self::RULE_MAX, $rule);
+                } else if ($ruleName === self::RULE_MIN && strlen($value) < $rule['min']) {
+                    $this->addError($inputName, self::RULE_MIN, $rule);
+                } else if ($ruleName === self::RULE_MATCH && $value !== $this->{$rule['match']}) {
+                    $this->addError($inputName, self::RULE_MATCH, $rule);
                 }
             }
         }
-        echo '<pre>', var_dump($this->errors), '</pre>';
-
         return !empty($this->errors);
     }
 
-    public function addError(string $ruleOrigin, string $ruleName) 
+    public function addError(string $ruleOrigin, string $ruleName, array $params =[]) 
     {
         $message = $this->errorMessages()[$ruleName] ?? '';
+        foreach($params as $rule => $value) {
+            $message = str_replace('{' . $rule . '}', $value, $message);
+        }
         $this->errors[$ruleOrigin][] = $message;
     }
 
@@ -78,9 +82,22 @@ abstract class Model {
             self::RULE_REQUIRED => 'Required.',
             self::RULE_EMAIL    => 'Must be a valid email address.',
             self::RULE_MIN      => 'Must be at least {min} characters.',
-            self::RULE_EMAIL    => 'Must be less than {max} characters.',
+            self::RULE_MAX      => 'Must be less than {max} characters.',
             self::RULE_MATCH    => 'Must match {match}.'
         ];
+    }
+
+    /** 
+     * Returns bool if specified input has error
+     * ---
+     * @param string @$inputName
+     * @return bool  True if there is an error, false otherwise
+     */
+    public function hasError(string $inputName)
+    {
+        if(!empty($this->errors[$inputName]) && !is_null($this->errors[$inputName])) {
+            return true;
+        } return false;
     }
 
     /**

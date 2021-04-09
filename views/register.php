@@ -1,4 +1,25 @@
-<form method="post" action=''>
+<?php 
+
+    $form = app\core\form\Form::beginForm('post', '');
+
+        echo '<pre>';
+        var_dump($model->errors);
+        echo '</pre>';
+
+
+        echo $form->field($model, 'firstName', 'First Name') . '<br>';
+        echo $form->field($model, 'lastName', 'Last Name'). '<br>';
+        echo $form->field($model, 'email', 'Email'). '<br>';
+        echo $form->field($model, 'password', 'Password', 'password'). '<br>';
+        echo $form->field($model, 'passwordConfirm', 'Confirm Password', 'password'). '<br>';
+        ?><button type='submit'>submit</button><?php
+
+    app\core\form\Form::endForm();
+
+?>
+
+
+<!-- <form method="post" action=''>
     <label for='email-input'>Email</label>
     <input id='email-input' type='email' name='email' >
     <br>
@@ -15,6 +36,6 @@
     <input id='password-repeat-input' type='password' name='passwordConfirm'> 
     <br>
     <button type='submit'>submit</button>
-</form>
+</form> -->
 <br>
 <a href='/login'>Use existing account</a>

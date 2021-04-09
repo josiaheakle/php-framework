@@ -78,6 +78,9 @@ form {
     align-items: center;
     justify-content: center;
 }
+.error {
+    background-color: red;
+}
 
 /* main {
     margin-left: var(--main-margin);

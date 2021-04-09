@@ -16,7 +16,7 @@ class RegisterModel extends Model
     }
 
     /**
-     * Returns array of rules for each input of the modal.
+     * Returns array of rules for each input of the model.
      * ---
      * @return array : ['inputName' => [self::RULE_EXAMPLE]]
      */
