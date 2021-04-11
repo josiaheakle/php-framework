@@ -2,9 +2,6 @@
 
 namespace app\models;
 
-use EmptyIterator;
-use FFI;
-
 abstract class Model {
 
     public const RULE_REQUIRED = 'required';
@@ -23,7 +20,7 @@ abstract class Model {
     abstract public function rules(): array;
     
     /**
-     * 
+     * Loads array of input following class attributes
      */
     public function loadData(array $data) 
     {
@@ -36,12 +33,14 @@ abstract class Model {
 
 
     /**
-     * Goes through rules() 
+     * Goes through custom set rules() to validate each input
+     * ---
+     * @return bool : True if no errors 
      */
-    public function validate()
+    public function validate() : bool
     {
         foreach ($this->rules() as $inputName => $rules) {
-            $value = $this->{$inputName};
+            $value = $this->{$inputName} ?? '';
             foreach ($rules as $rule) {
                 if(!is_string($rule)) {
                     $ruleName = $rule[0];
@@ -62,6 +61,14 @@ abstract class Model {
         return !empty($this->errors);
     }
 
+    /**
+     * Adds validation error to error array, 
+     * ---
+     * @param string $ruleOrigin : incorrect input field name
+     * @param string $ruleName   : self::RULE_CONST
+     * @param array $params      : ruleParam=>value
+     * @return void
+     */
     public function addError(string $ruleOrigin, string $ruleName, array $params =[]) 
     {
         $message = $this->errorMessages()[$ruleName] ?? '';
@@ -76,7 +83,7 @@ abstract class Model {
      * ---
      * @return array [self::RULE_EXAPLE=>'message example']
      */
-    public function errorMessages()
+    public function errorMessages() : array
     {
         return [
             self::RULE_REQUIRED => 'Required.',
@@ -93,7 +100,7 @@ abstract class Model {
      * @param string @$inputName
      * @return bool  True if there is an error, false otherwise
      */
-    public function hasError(string $inputName)
+    public function hasError(string $inputName) : bool
     {
         if(!empty($this->errors[$inputName]) && !is_null($this->errors[$inputName])) {
             return true;
@@ -101,26 +108,14 @@ abstract class Model {
     }
 
     /**
-     * 
+     * Gets all errors for input field
+     * ---
+     * @return array : errors
      */
-    public static function validateString() 
+    public function getFieldErrors(string $inputName)  : array
     {
-
-    }
-
-    /**
-     * 
-     */
-    public static function validateEmail() 
-    {
-
-    }
-
-    /**
-     * 
-     */
-    public static function createPassword()
-    {
-
+        if(!empty($this->errors[$inputName]) && !is_null($this->errors[$inputName])) {
+            return $this->errors[$inputName];
+        } return [];
     }
 }

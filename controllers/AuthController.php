@@ -5,19 +5,26 @@ namespace app\controllers;
 use app\{
     core\Controller,
     core\Request,
-    models\RegisterModel
+    models\RegisterModel,
+    models\LoginModel
 };
 
 class AuthController extends Controller {
 
+    public string $baseColor    = 'teal';
+
     public function login(Request $request) 
     {
         $this->setLayout('auth');
+        $loginModel = new loginModel();
         if($request->isPost()) {
-            var_dump($request->getBody());
-            return 'Handle Login';
+            $loginModel->loadData($request->getBody());
+            if($loginModel->validate() && $loginModel->login()) {
+                var_dump(['success' => $loginModel]);
+            }
+
         }
-        return $this->render('login');
+        return $this->render('login', ['model' => $loginModel]);
     }
 
     public function register(Request $request) 
@@ -30,8 +37,7 @@ class AuthController extends Controller {
                 var_dump(['success' => $registerModel]);
             }
             
-            return $this->render('register',    ['model' => $registerModel]);
-        } else return $this->render('register', ['model' => $registerModel]);
+        } return $this->render('register', ['model' => $registerModel]);
     }
 
 }

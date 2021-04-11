@@ -15,6 +15,8 @@ use app\core\Request;
 class SiteController extends Controller
 {
 
+    public string $baseColor = 'teal';
+
     public function home()
     {
         $params = [
@@ -31,8 +33,7 @@ class SiteController extends Controller
     public function handleContact(Request $request)
     {
         $body = $request->getBody();
-        var_dump($body);
-        // return 
+        return 'boi';
     }
 }
 

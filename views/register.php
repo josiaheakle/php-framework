@@ -1,23 +1,42 @@
-<?php 
+<div class="card ">
+    <div class="card-content black-text center-align">
+        <span class="card-title">Register</span>
+        <div class='container center-align column'>
+            <?php 
 
-    $form = app\core\form\Form::beginForm('post', '');
-
-        echo '<pre>';
-        var_dump($model->errors);
-        echo '</pre>';
+// echo '<pre>';
+// var_dump($model);
+// echo '</pre>';
 
 
-        echo $form->field($model, 'firstName', 'First Name') . '<br>';
-        echo $form->field($model, 'lastName', 'Last Name'). '<br>';
-        echo $form->field($model, 'email', 'Email'). '<br>';
-        echo $form->field($model, 'password', 'Password', 'password'). '<br>';
-        echo $form->field($model, 'passwordConfirm', 'Confirm Password', 'password'). '<br>';
-        ?><button type='submit'>submit</button><?php
+                $form = app\core\form\Form::beginForm('post', '');
 
-    app\core\form\Form::endForm();
+                    echo $form->field($model, 'firstName', 'First Name', 'text', 'col s6');
+                    echo $form->field($model, 'lastName', 'Last Name', 'text', 'col s6') . '<br>';
+                    echo $form->field($model, 'email', 'Email', 'email', 'col s8') . '<br>';
+                    echo $form->field($model, 'password', 'Password', 'password', 'col s6');
+                    echo $form->field($model, 'passwordConfirm', 'Confirm Password', 'password', 'col s6');
+                    ?>
 
-?>
+                    <?php
+                app\core\form\Form::submitButton();
+                app\core\form\Form::endForm();
 
+            ?>
+            <a class='' href='/login'>Use existing account</a>
+        </div>
+
+
+
+
+
+
+    </div>
+        <!-- <div class="card-action">
+            <a href="#">This is a link</a>
+            <a href="#">This is a link</a>
+        </div> -->
+</div>
 
 <!-- <form method="post" action=''>
     <label for='email-input'>Email</label>
@@ -37,5 +56,3 @@
     <br>
     <button type='submit'>submit</button>
 </form> -->
-<br>
-<a href='/login'>Use existing account</a>

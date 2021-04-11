@@ -10,17 +10,21 @@ namespace app\core;
  */
 class Application {
 
+    public static Application   $app;
+    
     public        Router        $router;
     public        Request       $request;
     public        Response      $response;
     public        Controller    $controller;
 
-    public static Application   $app;
-
-
     public static string        $ROOT_DIR;
     public static string        $APP_NAME;
     public static string        $ROOT_URI;
+
+    public static string        $DB_HOST;
+    public static string        $DB_USER;
+    public static string        $DB_PASS;
+    public static string        $DB_NAME;
 
     /**
      * Creates instance of Request, Response, and Router
@@ -30,7 +34,7 @@ class Application {
      * @param string $rootUri
      * 
      */
-    function __construct(string $appName, string $rootDir, string $rootUri)
+    function __construct(string $appName, string $rootDir, string $rootUri, string $db_host = NULL, string $db_user = NULL, string $db_pass = NULL, string $db_name = NULL)
     {
         self::$APP_NAME = $appName;
         self::$ROOT_DIR = $rootDir;
