@@ -16,15 +16,11 @@ class Application {
     public        Request       $request;
     public        Response      $response;
     public        Controller    $controller;
+    public        Database      $database;
 
     public static string        $ROOT_DIR;
     public static string        $APP_NAME;
     public static string        $ROOT_URI;
-
-    public static string        $DB_HOST;
-    public static string        $DB_USER;
-    public static string        $DB_PASS;
-    public static string        $DB_NAME;
 
     /**
      * Creates instance of Request, Response, and Router
@@ -34,14 +30,16 @@ class Application {
      * @param string $rootUri
      * 
      */
-    function __construct(string $appName, string $rootDir, string $rootUri, string $db_host = NULL, string $db_user = NULL, string $db_pass = NULL, string $db_name = NULL)
+    function __construct(array $config)
     {
-        self::$APP_NAME = $appName;
-        self::$ROOT_DIR = $rootDir;
-        self::$ROOT_URI = $rootUri;
+        // REQUIRED
+        self::$APP_NAME = $config['appName'];
+        self::$ROOT_DIR = $config['rootDir'];
+        self::$ROOT_URI = $config['rootUri'];
 
         self::$app      = $this;        
 
+        $this->database = new Database($config['db']);
         $this->request  = new Request();
         $this->response = new Response();
         $this->router   = new Router($this->request, $this->response);
@@ -64,4 +62,5 @@ class Application {
     {
         echo $this->router->resolve();
     }
+
 }

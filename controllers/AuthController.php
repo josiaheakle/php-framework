@@ -3,10 +3,12 @@
 namespace app\controllers;
 
 use app\{
+    core\Application,
     core\Controller,
     core\Request,
     models\RegisterModel,
-    models\LoginModel
+    models\LoginModel,
+    utils\Util
 };
 
 class AuthController extends Controller {
@@ -16,11 +18,11 @@ class AuthController extends Controller {
     public function login(Request $request) 
     {
         $this->setLayout('auth');
-        $loginModel = new loginModel();
+        $loginModel = new loginModel(Application::$app->database::$mysqli);
         if($request->isPost()) {
             $loginModel->loadData($request->getBody());
-            if($loginModel->validate() && $loginModel->login()) {
-                var_dump(['success' => $loginModel]);
+            if($loginModel->login()) {
+                Util::logDebug(DEBUG_PATH, ['success' => $loginModel]);
             }
 
         }
@@ -30,11 +32,13 @@ class AuthController extends Controller {
     public function register(Request $request) 
     {
         $this->setLayout('auth');
-        $registerModel = new RegisterModel();
+        $registerModel = new RegisterModel(Application::$app->database::$mysqli);
         if ($request->isPost()) {
             $registerModel->loadData($request->getBody());
-            if($registerModel->validate() && $registerModel->register()) {
-                var_dump(['success' => $registerModel]);
+            if($registerModel->register()) {
+                Util::logDebug(DEBUG_PATH, ['success' => RegisterModel::$mysqli->get]);
+            } else {
+                Util::logDebug(DEBUG_PATH, ['not success' => RegisterModel::$mysqli->error]);
             }
             
         } return $this->render('register', ['model' => $registerModel]);

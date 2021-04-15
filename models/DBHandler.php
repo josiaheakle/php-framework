@@ -4,24 +4,39 @@ namespace app\models;
 
 trait DBHandler {
 
-    public \mysqli $mysqli;
+    public static \mysqli   $mysqli;
 
-    public string $dbHost;
-    public string $dbUser;
-    public string $dbPass;
-    public string $dbName;
+    protected static        $dbHost;
+    protected static        $dbUser;
+    protected static        $dbPass;
+    protected static        $dbName;
 
-    public function databaseInit(string $dbHost, string $dbName, string $dbPass, string $dbUser)
+    /**
+     * Saves params to instance
+     * ---
+     * @param string $dbHost
+     * @param string $dbName
+     * @param string $dbPass
+     * @param string $dbUser
+     * @return void
+     */
+    public static function databaseInit(string $dbHost, string $dbUser, string $dbPass, string $dbName)
     {
-        $this->dbHost = $dbHost;
-        $this->dbUser = $dbUser;
-        $this->dbPass = $dbPass;
-        $this->dbName = $dbName;
+        self::$dbHost = $dbHost;
+        self::$dbUser = $dbUser;
+        self::$dbPass = $dbPass;
+        self::$dbName = $dbName;
+        self::$mysqli = new \mysqli();
     }
 
-    public function databaseConnect()
+    /**
+     * Connects mysqli to db using params set in databaseInit
+     * ---
+     * @return void
+     */
+    public static function databaseConnect()
     {
-        mysqli_connect($this->dbHost, $this->dbUser, $this->dbPass, $this->dbName, $this->mysqli);
+        self::$mysqli->connect(self::$dbHost, self::$dbUser, self::$dbPass, self::$dbName);
     }
 
     /**
@@ -29,9 +44,9 @@ trait DBHandler {
      * ---
      * @return string mysqli error
      */
-    public function geLastMysqliError() : string
+    public static function getLastMysqliError() : string
     {
-        return $this->mysqli->error;
+        return (self::$mysqli->error === '' ? false : self::$mysqli->error);
     }
 
     /**
@@ -41,7 +56,7 @@ trait DBHandler {
      */
     public function getMysqliErrors() : array
     {
-        return $this->mysqli->error_list;
+        return self::$mysqli->error_list;
     }
 
 }

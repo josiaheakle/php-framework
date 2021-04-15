@@ -2,14 +2,35 @@
 
 namespace app\models;
 
+use app\core\Application;
+use app\utils\Util;
+
 class LoginModel extends Model
 {
     public string $email;
     public string $password;
 
+    /**
+     * Validates, returns 
+     */
     public function login()
     {
-        echo 'login';
+        if($this->validate()) {
+            $sql  = "SELECT * FROM users WHERE email=? AND deleted IS NULL LIMIT 1 ";
+            $stmt = self::$mysqli->prepare($sql);
+            $stmt->bind_param('s', $this->email);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
+            Util::logDebug(DEBUG_PATH, ['LOGIN STMT'=>$stmt->get_result()]);
+            Util::logDebug(DEBUG_PATH, ['LOGIN VALIDATION RESULT'=>$result]);
+            Util::logDebug(DEBUG_PATH, ['MYSQL ERROR'=>self::$mysqli->error]);
+            if(!is_null($result)) {
+                $pass_verify = password_verify($this->password, $result['password']);
+                if($pass_verify) {
+                    return $result;
+                }
+            } return false;
+        }
     }
 
     /**

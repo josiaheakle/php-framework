@@ -3,12 +3,6 @@
         <span class="card-title">Register</span>
         <div class='container center-align column'>
             <?php 
-
-// echo '<pre>';
-// var_dump($model);
-// echo '</pre>';
-
-
                 $form = app\core\form\Form::beginForm('post', '');
 
                     echo $form->field($model, 'firstName', 'First Name', 'text', 'col s6');

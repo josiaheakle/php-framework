@@ -2,15 +2,28 @@
 
 namespace app\models;
 
+use app\core\Application;
+use app\utils\Util;
+
 abstract class Model {
+
+    // SET IN CHILD CONSTRUCT
+    public static string  $tableName;
+    public static \mysqli $mysqli;
 
     public const RULE_REQUIRED = 'required';
     public const RULE_EMAIL    = 'email';
     public const RULE_MATCH    = 'match';
     public const RULE_MIN      = 'min';
     public const RULE_MAX      = 'max';
+    public const RULE_UNIQUE   = 'unique';
 
     public array $errors = [];
+
+    public function __construct(\mysqli $mysqli)
+    {
+        self::$mysqli = $mysqli;
+    }
 
     /**
      * Returns array of rules for each input of the model.
@@ -55,10 +68,22 @@ abstract class Model {
                     $this->addError($inputName, self::RULE_MIN, $rule);
                 } else if ($ruleName === self::RULE_MATCH && $value !== $this->{$rule['match']}) {
                     $this->addError($inputName, self::RULE_MATCH, $rule);
+                } else if ($ruleName === self::RULE_UNIQUE) {
+                    $sql  = " SELECT uniqueID from " . self::$tableName . " WHERE " . $rule['column'] . "=?"; 
+                    $stmt = self::$mysqli->prepare($sql);
+                    $stmt->bind_param('s', $value);
+                    if($stmt->execute() === false) {
+                        $this->addError($inputName, self::RULE_UNIQUE, $rule);
+                    } else {
+                        $result   = $stmt->get_result()->fetch_all();             
+                        if(count($result) > 0) {
+                            $this->addError($inputName, self::RULE_UNIQUE, $rule);
+                        }
+                    }
                 }
             }
         }
-        return !empty($this->errors);
+        return empty($this->errors);
     }
 
     /**
@@ -73,7 +98,7 @@ abstract class Model {
     {
         $message = $this->errorMessages()[$ruleName] ?? '';
         foreach($params as $rule => $value) {
-            $message = str_replace('{' . $rule . '}', $value, $message);
+            $message = str_replace('{' . $rule . '}', ucfirst($value), $message);
         }
         $this->errors[$ruleOrigin][] = $message;
     }
@@ -90,7 +115,8 @@ abstract class Model {
             self::RULE_EMAIL    => 'Must be a valid email address.',
             self::RULE_MIN      => 'Must be at least {min} characters.',
             self::RULE_MAX      => 'Must be less than {max} characters.',
-            self::RULE_MATCH    => 'Must match {match}.'
+            self::RULE_MATCH    => 'Must match {match}.',
+            self::RULE_UNIQUE   => '{column} is already in use.'
         ];
     }
 
