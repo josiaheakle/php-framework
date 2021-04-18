@@ -1,12 +1,9 @@
 <?php
 
+// Autoload 
 require_once dirname(__DIR__) . "/vendor/autoload.php";
 
-// Error handling
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
+// Namespace imports
 use app\ {
     core\Application,
     controllers\SiteController,
@@ -15,9 +12,11 @@ use app\ {
 };
 use Dotenv\Dotenv;
 
+// Initialize .env
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
+// Create config
 $config = [
     'appName' => 'Test App',
     'rootDir' => dirname(__DIR__),
@@ -30,8 +29,14 @@ $config = [
     ]
 ];
 
+// Create new app with config
 $app = new Application($config);
 
+// DEBUG setup
+define('DEBUG_PATH', Application::$ROOT_DIR . '/public/DEBUG.txt');
+Util::clearDebug(DEBUG_PATH);
+
+// Set routes
 $app->router->get ('/',         [SiteController::class, "home"]);
 $app->router->get ('/contact',  [SiteController::class, "contact"]);
 $app->router->post('/contact',  [SiteController::class, "handleContact"]);
@@ -41,11 +46,6 @@ $app->router->post('/login',    [AuthController::class, 'login']);
 
 $app->router->get ('/register', [AuthController::class, 'register']);
 $app->router->post('/register', [AuthController::class, 'register']);
-
-define('DEBUG_PATH', Application::$ROOT_DIR . '/public/DEBUG.txt');
-
-Util::clearDebug(DEBUG_PATH);
-
 
 $app->run();
 

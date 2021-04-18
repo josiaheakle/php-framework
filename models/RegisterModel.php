@@ -51,8 +51,6 @@ class RegisterModel extends Model
 
             $stmt->execute();
             
-            Util::logDebug(DEBUG_PATH, ['mysqli_error' => self::$mysqli->error_get_last], ['mysqli' => self::$mysqli]);
-            
 
             return true;
 

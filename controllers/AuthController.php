@@ -22,7 +22,6 @@ class AuthController extends Controller {
         if($request->isPost()) {
             $loginModel->loadData($request->getBody());
             if($loginModel->login()) {
-                Util::logDebug(DEBUG_PATH, ['success' => $loginModel]);
             }
 
         }
@@ -36,9 +35,7 @@ class AuthController extends Controller {
         if ($request->isPost()) {
             $registerModel->loadData($request->getBody());
             if($registerModel->register()) {
-                Util::logDebug(DEBUG_PATH, ['success' => RegisterModel::$mysqli->get]);
             } else {
-                Util::logDebug(DEBUG_PATH, ['not success' => RegisterModel::$mysqli->error]);
             }
             
         } return $this->render('register', ['model' => $registerModel]);

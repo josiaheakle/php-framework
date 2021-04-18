@@ -21,9 +21,6 @@ class LoginModel extends Model
             $stmt->bind_param('s', $this->email);
             $stmt->execute();
             $result = $stmt->get_result()->fetch_assoc();
-            Util::logDebug(DEBUG_PATH, ['LOGIN STMT'=>$stmt->get_result()]);
-            Util::logDebug(DEBUG_PATH, ['LOGIN VALIDATION RESULT'=>$result]);
-            Util::logDebug(DEBUG_PATH, ['MYSQL ERROR'=>self::$mysqli->error]);
             if(!is_null($result)) {
                 $pass_verify = password_verify($this->password, $result['password']);
                 if($pass_verify) {

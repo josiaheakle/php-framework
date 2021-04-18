@@ -18,21 +18,18 @@ class Util {
      * Util
      *s to first argument as path
      * ---
+     * @param mixed $args -> array, string, object
      * @param string $path 
-     * @param mixed ...$args
      * @return bool true on success
      */
-    public static function logDebug(string $path, ...$args) : bool
+    public static function logDebug($args, string $path = 'DEBUG.txt') : bool
     {
         $fileStream = fopen($path, 'a');
         $dateNow = self::dateNow();
         ob_start();
         echo "\n\n[" . $dateNow . "] ========================================================================= \n";
-        foreach($args as $a) {
-            var_dump($a);
-            echo "\n---\n";
-            // echo implode(",\n", explode(",", json_encode($a, JSON_FORCE_OBJECT, 24))) . "\n";
-        }
+        var_dump($args);
+        echo "\n---\n";
         fwrite($fileStream, ob_get_clean());
         return fclose($fileStream);
     }
